@@ -29,18 +29,19 @@ def check_hacker_login():
         cursor.execute("SELECT * FROM hackers WHERE alias = ? AND password = ?", [hacker_login_alias, hacker_login_password])
         database_login_info = cursor.fetchall()
 
-        # If a match is found, it means the hacker has succesfully logged in and will be shown all of the options. The hacker will not be asked to log in again 
-        # If a match is not found, print an error message to the hacker and prompt them to re-enter their username and password
+        # If a match is found, it means the hacker has succesfully logged in and will be shown all of the options
         if(cursor.rowcount == 1):
             print(f"\nWelcome back, @{hacker_login_alias}.")
             # Passing the hacker's username and id so that it can be used to create new exploits, view exploits and modify exploits
             options_menu.show_options(hacker_login_alias, database_login_info[0][0])
-            return
+            return True
         else:
+            # If a match is not found, print an error message to the hacker and prompt them to re-enter their username and password
             print("\nThe username and password do not match our records. Please re-enter your login information.")
-    # If errors occurs during this process, raise the following exceptions, print an error message to the hacker and the traceback
+            return False
+    # If errors occur during this process, raise the following exceptions, print an error message to the hacker and the traceback
     except mariadb.OperationalError:
-        # An OptionalError exception is raised for things that are not in control of the programmer such as an unexpected connection failure, server hutting down, etc.
+        # An OperationalError exception is raised for things that are not in control of the programmer such as an unexpected connection failure, server shutting down, etc.
         print(f"\nFailed to connect to the database. Unable to retrieve @{hacker_login_alias}'s login information.\n")
         traceback.print_exc()
     except mariadb.ProgrammingError:

@@ -21,29 +21,29 @@ def signup_hacker():
         print("\nSignup")
         print("------\n")
 
-        # Prompting the hacker to enter their username and password
+        # Prompting the hacker to enter a username and password
         hacker_signup_alias = input("Create a username: ")
         hacker_signup_password = input("Create a password: ")
 
-        # If the hacker does not enter anything for the username or password field, print an error message to the hacker and prompt them to enter a username and password again
-        # If not, store their username and password to the database and commit the changes
+        # If the hacker does not enter anything for the username or password field, print an error message to the hacker and prompt them to enter a valid username and password again
         if(hacker_signup_alias == "" or hacker_signup_password == ""):
             print("\nInvalid signup information. Please enter valid credentials to create an account.")
         else:
+            # If the hacker enters valid signup credentials, store their username and password into the database and commit the changes
             cursor.execute("INSERT INTO hackers(alias, password) VALUES(?, ?)", [hacker_signup_alias, hacker_signup_password])
             conn.commit()
-
-            # Checking to see if their information is stored into the database and if it is, print a welcome message to the hacker and show them the list of options. The hacker will not be prompted to create an account again
-            # If their username and password was not stored into the database, print an error message to the hacker
+            # Checking to see if their information is stored in the database and if it is, print a welcome message to the hacker and show them the list of options. The hacker will not be prompted to create an account again
             if(cursor.rowcount == 1):
                 print(f"\nWelcome, @{hacker_signup_alias}. Your Hacker ID is {cursor.lastrowid}")
                 options_menu.show_options(hacker_signup_alias, cursor.lastrowid)
-                return
+                return True
             else:
+                # If their username and password was not stored in the database, print an error message to the hacker
                 print("\nFailed to create an account.")
+                return False
     # If errors occurs during this process, raise the following exceptions, print an error message to the hacker and the traceback
     except mariadb.IntegrityError:
-        # An IntegrityError is raised if there is a constraint failure. In this case, a unique key is set on every username, and if the integrity of the contraint is not respected, it will cause an error
+        # An IntegrityError is raised if there are any constraint failures. In this case, a unique key is set on every username, and if the integrity of the contraint is not respected, it will cause an error
         print(f"\n@{hacker_signup_alias} is already taken. Please enter another username.\n")
         traceback.print_exc()
     except mariadb.DataError:
@@ -51,7 +51,7 @@ def signup_hacker():
         print("\nYour username or password has exceed the limit of 20 characters. Please re-enter your information.\n")
         traceback.print_exc()
     except mariadb.OperationalError:
-        # An OptionalError exception is raised for things that are not in control of the programmer such as an unexpected connection failure, server hutting down, etc.
+        # An OperationalError exception is raised for things that are not in control of the programmer such as an unexpected connection failure, server shutting down, etc.
         print(f"\nFailed to connect to the database. Unable to create an account.\n")
         traceback.print_exc()
     except mariadb.ProgrammingError:
@@ -63,7 +63,7 @@ def signup_hacker():
         print("\nInvalid MariaDB syntax. Please refer to the documentation.\n")
         traceback.print_exc()
     except mariadb.DatabaseError:
-        # A DatabaseError exception is raise for all errors that are related to the database
+        # A DatabaseError exception is raised for all errors that are related to the database
         print(f"\nAn error has occured in the database. Failed to create an account.\n")
         traceback.print_exc()
     except mariadb.InterfaceError:
