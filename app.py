@@ -3,10 +3,11 @@ import login
 import traceback
 
 # The "Home Page" of the application which prompt hackers to either sign up or log in
+# If the hacker enters an invalid selection, prompt the hacker to enter their selection again
 while(True):
     print("\n-----------------------------\nUnderground Social Media Site\n-----------------------------\n")
     print("Choose which of the following you would like to do:\n1: Signup\n2: Login")
-    
+
     # Using a try-except block to catch errors when a hacker enters an invalid entry
     try:
         # Prompting the hackers to make a selection

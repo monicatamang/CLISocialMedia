@@ -41,6 +41,7 @@ def signup_hacker():
                 return
             else:
                 print("\nFailed to create an account.")
+    # If errors occurs during this process, raise the following exceptions, print an error message to the hacker and the traceback
     except mariadb.IntegrityError:
         # An IntegrityError is raised if there is a constraint failure. In this case, a unique key is set on every username, and if the integrity of the contraint is not respected, it will cause an error
         print(f"\n@{hacker_signup_alias} is already taken. Please enter another username.\n")
@@ -65,6 +66,10 @@ def signup_hacker():
         # A DatabaseError exception is raise for all errors that are related to the database
         print(f"\nAn error has occured in the database. Failed to create an account.\n")
         traceback.print_exc()
+    except mariadb.InterfaceError:
+        # An InterfaceError exception is raised if there are errors found in python or the database client
+        print("An interface error has occured. Please check the documentation for Python or the database client.")
+        traceback.print_exc()
     except:
         # Catching all other errors
         print("\nAn error has occured. Failed to sign up for an account.\n")
@@ -75,8 +80,5 @@ def signup_hacker():
     closing_db = dbconnect.close_db_connection(conn)
 
     # If the cursor or database connection failed to close, print an error message
-    # If the cursor or database connection successfully closed, print a success message
     if(closing_cursor == False or closing_db == False):
-        print("Failed to close cursor and database connection.")
-    else:
-        print("Cursor and database connection was successfully closed.")
+        print("\nFailed to close cursor and database connection.")
