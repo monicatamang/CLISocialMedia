@@ -1,6 +1,6 @@
-import traceback
 import signup
 import login
+import traceback
 
 while(True):
     print("\n-----------------------------\nUnderground Social Media Site\n-----------------------------\n")
@@ -17,6 +17,7 @@ while(True):
         else:
             print("\nInvalid selection. Please re-enter your selection.\n")
     except ValueError:
+        # A ValueError is raised if the user enters the correct data type but an inappropriate value
         print("\nInvalid data type. Expected a numerical value.\n")
         traceback.print_exc()
     except:
